@@ -1,6 +1,6 @@
 {
   "name": "mdpix",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Render any Markdown file into dense PNG image pages plus a text factsheet, for token-efficient LLM context injection.",
   "type": "module",
   "license": "MIT",

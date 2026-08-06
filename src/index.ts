@@ -6,10 +6,10 @@ import { segmentMarkdown, type Block } from "./markdown.js";
 import { renderTextToImages } from "./render.js";
 import { resolveProfile } from "./profiles.js";
 
-export { renderTextToImages } from "./render.js";
+export { renderTextToImages, renderDensePages, type RenderFont } from "./render.js";
 export { buildFactsheet, formatFactsheet } from "./factsheet.js";
 export { segmentMarkdown } from "./markdown.js";
-export { resolveProfile, PROFILES, DEFAULT_PROFILE } from "./profiles.js";
+export { resolveProfile, PROFILES, DEFAULT_PROFILE, type RenderProfile } from "./profiles.js";
 
 export type TextMode = "auto" | "all" | "none";
 
@@ -98,7 +98,9 @@ export async function renderMarkdownFile(
   const blocks = segmentMarkdown(source);
   const imageableText = selectImageableText(blocks, textMode);
 
-  const { pages, truncated } = await renderTextToImages(imageableText, { profile: profile.name });
+  const { pages, truncated, droppedChars, droppedCodepoints } = await renderTextToImages(imageableText, {
+    profile: profile.name,
+  });
 
   const pageFiles: string[] = [];
   pages.forEach((buf, idx) => {
@@ -118,6 +120,10 @@ export async function renderMarkdownFile(
         truncated,
         factsheetEntryCount: factsheetEntries.length,
         textMode,
+        droppedChars,
+        droppedCodepoints: Object.fromEntries(
+          Array.from(droppedCodepoints.entries()).map(([cp, n]) => [`U+${cp.toString(16).toUpperCase()}`, n])
+        ),
       },
       null,
       2

@@ -1,44 +1,55 @@
+import type { RenderFont } from "./render.js";
+
+/**
+ * Per-model page geometry. Values matched to pxpipe's measured settings
+ * (https://github.com/teamchong/pxpipe, MIT License) -- same page dimensions,
+ * column/row counts, and font per target vision model.
+ */
 export interface RenderProfile {
   name: string;
-  pageWidth: number;
-  pageHeight: number;
-  fontSize: number;
-  lineHeight: number;
-  charWidth: number;
-  fontFamily: string;
+  /** Max wrap width in columns (pxpipe: stripCols). */
+  cols: number;
+  /** Max rendered image height in px (pxpipe: maxHeightPx). */
+  maxHeightPx: number;
+  /** Bitmap font atlas to render with. */
+  font: RenderFont;
+  /** Page budget before truncation kicks in. */
   maxImages: number;
 }
 
 export const PROFILES: Record<string, RenderProfile> = {
+  // Anthropic geometry: dense 312-col strips, 728px height (1568x728 fits both
+  // the API's long-edge<=1568 AND ~1.15MP clamp -- WYSIWYG for the vision encoder).
   claude: {
     name: "claude",
-    pageWidth: 1568,
-    pageHeight: 728,
-    fontSize: 16,
-    lineHeight: 20,
-    charWidth: 9.6,
-    fontFamily: "monospace",
-    maxImages: 64,
+    cols: 312,
+    maxHeightPx: 728,
+    font: "spleen-5x8",
+    maxImages: 96,
   },
+  // OpenAI GPT default geometry: 84 cols x 1932px strip.
   gpt: {
     name: "gpt",
-    pageWidth: 768,
-    pageHeight: 1600,
-    fontSize: 14,
-    lineHeight: 18,
-    charWidth: 8.4,
-    fontFamily: "monospace",
-    maxImages: 100,
+    cols: 84,
+    maxHeightPx: 1932,
+    font: "spleen-5x8",
+    maxImages: 64,
   },
+  // Gemini 3.6 Flash: reuses Anthropic's measured geometry (same 1568x728 canvas).
+  gemini: {
+    name: "gemini",
+    cols: 312,
+    maxHeightPx: 728,
+    font: "spleen-5x8",
+    maxImages: 32,
+  },
+  // Grok: native 14px JetBrains Mono was the densest clean rung on pxpipe's blind sweep.
   grok: {
     name: "grok",
-    pageWidth: 912,
-    pageHeight: 512,
-    fontSize: 14,
-    lineHeight: 18,
-    charWidth: 6,
-    fontFamily: "monospace",
-    maxImages: 64,
+    cols: 84,
+    maxHeightPx: 512,
+    font: "jetbrains-mono-14",
+    maxImages: 24,
   },
 };
 
@@ -52,12 +63,4 @@ export function resolveProfile(name?: string): RenderProfile {
     throw new Error(`Unknown render profile "${name}". Known profiles: ${known}`);
   }
   return profile;
-}
-
-export function columnsFor(profile: RenderProfile): number {
-  return Math.max(20, Math.floor(profile.pageWidth / profile.charWidth) - 4);
-}
-
-export function rowsFor(profile: RenderProfile): number {
-  return Math.max(10, Math.floor(profile.pageHeight / profile.lineHeight) - 2);
 }

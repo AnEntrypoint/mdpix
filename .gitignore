@@ -1,16 +1,5 @@
-.gm/pw-sock-*/
-.gm/exec-spool/
-.gm/memories/
-.gm/disciplines/codeinsight-manifest/
-.gm/disciplines/codeinsight-vec/
-.gm/last-dispatch-ts
-.gm/last-instruction-ts
-.gm/last-prompt.txt
-.gm/long-gap-retry-state
-.gm/turn-state.json
-.gm/next-step.md
-.gm/residual-check-fired
-.gm/.gm-continue-count
+.gm/
+.agentplug-kv/
 
 node_modules/
 dist/

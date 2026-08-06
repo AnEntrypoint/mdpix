@@ -6,3 +6,4 @@ dist/
 mdpix-out/
 *.log
 sh.exe.stackdump
+config.bat

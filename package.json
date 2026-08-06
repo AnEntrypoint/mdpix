@@ -1,6 +1,6 @@
 {
   "name": "mdpix",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Render any Markdown file into dense PNG image pages plus a text factsheet, for token-efficient LLM context injection.",
   "type": "module",
   "license": "MIT",
@@ -30,9 +30,11 @@
     "dev": "tsx bin/mdpix.ts"
   },
   "devDependencies": {
+    "@types/node": "^22.10.2",
+    "dotenv": "^8.2.0",
+    "node-fetch": "^3.3.2",
     "tsup": "^8.3.5",
     "tsx": "^4.19.2",
-    "typescript": "^5.7.2",
-    "@types/node": "^22.10.2"
+    "typescript": "^5.7.2"
   }
 }
